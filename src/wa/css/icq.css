@@ -127,7 +127,7 @@ html[data-skin='icq'] header [data-testid='wa-wordmark'] {
   display: none !important;
 }
 html[data-skin='icq'] header[data-testid='chatlist-header'] h2::before {
-  content: 'My Contact List';
+  content: var(--wm-label-contactList);
   font: bold 11px 'Microsoft Sans Serif', Tahoma, Verdana, 'DejaVu Sans', sans-serif;
   color: #000;
   padding-left: 20px;
@@ -247,7 +247,7 @@ html[data-skin='icq'] [data-testid='conversation-header'] img {
   border-radius: 0 !important;
 }
 html[data-skin='icq'] [data-testid='conversation-info-header-chat-title']::before {
-  content: 'To: ';
+  content: var(--wm-label-to);
   font-weight: normal;
   color: #444;
 }
@@ -317,14 +317,13 @@ html[data-skin='icq'] [data-wm-nudge='1'] > * {
   display: none !important;
 }
 html[data-skin='icq'] [data-wm-nudge='1']::after {
-  content: '*** ' attr(data-wm-sender) ' sent you a Zumbido! ***';
+  content: attr(data-wm-nudge-text);
   display: block;
   margin: 8px 10px;
   color: #c00000;
   font: bold 13px 'Microsoft Sans Serif', Tahoma, Verdana, 'DejaVu Sans', sans-serif;
 }
 html[data-skin='icq'] [data-wm-nudge='1'][data-wm-msg='out']::after {
-  content: '*** You sent a Zumbido! ***';
   color: #0000c0;
 }
 

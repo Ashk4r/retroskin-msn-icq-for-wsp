@@ -51,7 +51,7 @@ export const ICON = {
 }
 
 export const ONLINE_RE = /^(en línea|online|on-line)$/i
-export const TYPING_RE = /(escribiendo|typing|digitando|grabando|recording)/i
+export const TYPING_RE = /(escribiendo|typing|digitando|grabando|recording|schreibt|tippt|nimmt .* auf)/i
 /** "[6:55 pm, 10/10/2026] Juan Pérez: " → time, date, name */
 export const PRE_PLAIN_RE = /^\[([^,\]]+),\s*([^\]]+)\]\s(.*?):\s?$/
 

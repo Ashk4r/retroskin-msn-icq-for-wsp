@@ -14,6 +14,8 @@ const PORT = 4173
 
 const settings = {
   skin: 'msn',
+  language: 'es',
+  locale: 'es',
   nick: 'Licha',
   personalMessage: 'Tecnología desde la trinchera',
   msnStatus: 'online',
@@ -49,6 +51,10 @@ window.addEventListener('message', (e) => {
   if (e.origin !== location.origin) return
   if (e.data.skin) {
     settings = { ...settings, skin: e.data.skin }
+    emit()
+  }
+  if (e.data.locale) {
+    settings = { ...settings, language: e.data.locale, locale: e.data.locale }
     emit()
   }
   if (e.data.action === 'chat') {
@@ -107,6 +113,11 @@ document.querySelectorAll('#controls [data-skin]').forEach((button) => {
     post({ skin: settings.skin })
   }
 })
+document.getElementById('language').onchange = (event) => {
+  settings.language = settings.locale = event.target.value
+  render()
+  post({ locale: settings.locale })
+}
 let compact = false
 let large = false
 document.getElementById('compact').onclick = () => {
@@ -147,6 +158,7 @@ const outer = `<!doctype html>
   <button data-skin="msn">MSN</button>
   <button data-skin="icq">ICQ</button>
   <button data-skin="off">Original</button>
+  <select id="language" aria-label="Idioma de la app"><option value="es">Español</option><option value="de">Deutsch</option><option value="en">English</option></select>
   <button id="compact">Ancho compacto</button>
   <button id="chat">Abrir/cerrar chat</button>
   <button id="composer">Editor multilínea</button>

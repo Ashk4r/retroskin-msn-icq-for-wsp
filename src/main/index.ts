@@ -14,7 +14,8 @@ import {
   type MenuItemConstructorOptions
 } from 'electron'
 import type { MenuId, Rect, Settings, SkinId, SoundId, WaState } from '@shared/types'
-import { ICQ_STATUS_LABEL, MSN_STATUS_LABEL, type IcqStatus, type MsnStatus } from '@shared/types'
+import { ICQ_STATUS, LANGUAGE_NAMES, MSN_STATUS, translator, type Locale } from '@shared/i18n'
+import type { IcqStatus, MsnStatus } from '@shared/types'
 import baseCss from '@wa/css/base.css?raw'
 import chromeCss from '@wa/css/chrome.css?raw'
 import msnCss from '@wa/css/msn.css?raw'
@@ -227,7 +228,7 @@ function registerWaEvents(): void {
     play('nudge')
     shake()
     win?.flashFrame(!win.isFocused())
-    toast('nudge', name, 'te envió un zumbido.')
+    toast('nudge', name, '')
   })
   ipcMain.on('wa:incoming', (_event, { name, preview, openChat }: { name: string; preview: string; openChat: boolean }) => {
     const focused = !!win?.isFocused()
@@ -245,9 +246,9 @@ function registerWaEvents(): void {
 }
 
 function toast(kind: 'message' | 'online' | 'nudge', name: string, text: string): void {
-  const { skin, toasts } = settings()
+  const { skin, locale, toasts } = settings()
   if (!toasts || skin === 'off' || !name) return
-  showToast({ skin, kind, name, text }, () => {
+  showToast({ skin, locale, kind, name, text }, () => {
     if (!win) return
     if (win.isMinimized()) win.restore()
     win.show()
@@ -258,22 +259,39 @@ function toast(kind: 'message' | 'online' | 'nudge', name: string, text: string)
 /* ------------------------------------------------------------------ menus */
 
 function skinItems(): MenuItemConstructorOptions[] {
-  const current = settings().skin
+  const { skin: current, locale } = settings()
+  const t = translator(locale)
   return [
     { label: 'MSN Messenger 7.5', type: 'radio', checked: current === 'msn', click: () => updateSettings({ skin: 'msn' }) },
     { label: 'ICQ 2000b', type: 'radio', checked: current === 'icq', click: () => updateSettings({ skin: 'icq' }) },
-    { label: 'WhatsApp original', type: 'radio', checked: current === 'off', click: () => updateSettings({ skin: 'off' }) }
+    { label: t('originalSkin'), type: 'radio', checked: current === 'off', click: () => updateSettings({ skin: 'off' }) }
   ]
 }
 
-function toggleItems(spanish: boolean): MenuItemConstructorOptions[] {
+function toggleItems(): MenuItemConstructorOptions[] {
   const s = settings()
+  const t = translator(s.locale)
   return [
-    { label: spanish ? 'Sonidos' : 'Sounds', type: 'checkbox', checked: s.sounds, click: () => updateSettings({ sounds: !s.sounds }) },
-    { label: spanish ? 'Sacudir la ventana con los zumbidos' : 'Shake window on Zumbido', type: 'checkbox', checked: s.shake, click: () => updateSettings({ shake: !s.shake }) },
-    { label: spanish ? 'Avisos emergentes' : 'Pop-up alerts', type: 'checkbox', checked: s.toasts, click: () => updateSettings({ toasts: !s.toasts }) },
-    { label: spanish ? 'Siempre visible' : 'Always on top', type: 'checkbox', checked: s.alwaysOnTop, click: () => updateSettings({ alwaysOnTop: !s.alwaysOnTop }) }
+    { label: t('sounds'), type: 'checkbox', checked: s.sounds, click: () => updateSettings({ sounds: !s.sounds }) },
+    { label: t('shake'), type: 'checkbox', checked: s.shake, click: () => updateSettings({ shake: !s.shake }) },
+    { label: t('popups'), type: 'checkbox', checked: s.toasts, click: () => updateSettings({ toasts: !s.toasts }) },
+    { label: t('alwaysOnTop'), type: 'checkbox', checked: s.alwaysOnTop, click: () => updateSettings({ alwaysOnTop: !s.alwaysOnTop }) }
   ]
+}
+
+function languageMenu(): MenuItemConstructorOptions {
+  const { language, locale } = settings()
+  const t = translator(locale)
+  return {
+    label: t('language'),
+    submenu: [
+      { label: t('systemLanguage'), type: 'radio', checked: language === 'system', click: () => updateSettings({ language: 'system' }) },
+      ...Object.entries(LANGUAGE_NAMES).map(([value, label]) => ({
+        label, type: 'radio' as const, checked: language === value,
+        click: () => updateSettings({ language: value as Locale })
+      }))
+    ]
+  }
 }
 
 const openSounds = (): void => void shell.openPath(ensureSoundsDir())
@@ -281,54 +299,56 @@ const reloadWa = (): void => wa?.webContents.reload()
 
 function buildMenu(id: MenuId): MenuItemConstructorOptions[] {
   const s = settings()
+  const t = translator(s.locale)
   switch (id) {
     case 'file':
       return [
-        { label: 'Cambiar de skin', submenu: skinItems() },
-        { label: 'Recargar WhatsApp', click: reloadWa },
+        { label: t('changeSkin'), submenu: skinItems() },
+        { label: t('reload'), click: reloadWa },
         { type: 'separator' },
-        { label: 'Cerrar', click: () => win?.close() }
+        { label: t('close'), click: () => win?.close() }
       ]
     case 'contacts':
-      return [{ label: 'Buscar un contacto…', accelerator: 'Ctrl+F', click: () => sendWa('wa:focus-search') }]
+      return [{ label: t('findContact'), accelerator: 'Ctrl+F', click: () => sendWa('wa:focus-search') }]
     case 'actions':
-      return [{ label: 'Enviar un zumbido', accelerator: 'Ctrl+G', click: () => sendWa('wa:send-nudge') }]
+      return [{ label: t('sendNudge'), accelerator: 'Ctrl+G', click: () => sendWa('wa:send-nudge') }]
     case 'tools':
       return [
-        { label: 'Skin', submenu: skinItems() },
+        { label: t('skin'), submenu: skinItems() },
         { type: 'separator' },
-        ...toggleItems(true),
+        languageMenu(),
+        ...toggleItems(),
         { type: 'separator' },
-        { label: 'Carpeta de sonidos…', click: openSounds },
-        { label: 'Opciones…', click: () => sendShell('dialog', 'options') }
+        { label: t('soundsFolder'), click: openSounds },
+        { label: t('options'), click: () => sendShell('dialog', 'options') }
       ]
     case 'help':
-      return [{ label: 'Acerca de Messenger', click: () => sendShell('dialog', 'about') }]
+      return [{ label: t('aboutMessenger'), click: () => sendShell('dialog', 'about') }]
     case 'status':
-      return (Object.keys(MSN_STATUS_LABEL) as MsnStatus[]).map((status) => ({
-        label: MSN_STATUS_LABEL[status],
+      return (Object.keys(MSN_STATUS) as MsnStatus[]).map((status) => ({
+        label: t(MSN_STATUS[status]),
         type: 'radio',
         checked: s.msnStatus === status,
         click: () => updateSettings({ msnStatus: status })
       }))
     case 'icq-main':
       return [
-        { label: 'Change Skin', submenu: skinItems() },
-        { label: 'Preferences', submenu: [...toggleItems(false), { type: 'separator' }, { label: 'Sounds folder…', click: openSounds }] },
-        { label: 'My Details (Nick / ICQ#)…', click: () => sendShell('dialog', 'options') },
+        { label: t('changeSkin'), submenu: skinItems() },
+        { label: t('preferences'), submenu: [languageMenu(), ...toggleItems(), { type: 'separator' }, { label: t('soundsFolder'), click: openSounds }] },
+        { label: t('details'), click: () => sendShell('dialog', 'options') },
         { type: 'separator' },
-        { label: 'Reload', click: reloadWa },
-        { label: 'About ICQ…', click: () => sendShell('dialog', 'about') },
+        { label: t('reload'), click: reloadWa },
+        { label: t('aboutIcq'), click: () => sendShell('dialog', 'about') },
         { type: 'separator' },
-        { label: 'Shut Down', click: () => win?.close() }
+        { label: t('exit'), click: () => win?.close() }
       ]
     case 'icq-services':
       return [
-        { label: 'Find/Add Users', accelerator: 'Ctrl+F', click: () => sendWa('wa:focus-search') },
-        { label: 'Send Zumbido!', accelerator: 'Ctrl+G', click: () => sendWa('wa:send-nudge') }
+        { label: t('findUsers'), accelerator: 'Ctrl+F', click: () => sendWa('wa:focus-search') },
+        { label: t('sendNudge'), accelerator: 'Ctrl+G', click: () => sendWa('wa:send-nudge') }
       ]
     case 'skin':
-      return skinItems()
+      return [...skinItems(), { type: 'separator' }, languageMenu()]
   }
   return []
 }
@@ -336,8 +356,9 @@ function buildMenu(id: MenuId): MenuItemConstructorOptions[] {
 /** ICQ's status menu, shown from the status button and the tray. */
 function icqStatusItems(): MenuItemConstructorOptions[] {
   const s = settings()
-  return (Object.keys(ICQ_STATUS_LABEL) as IcqStatus[]).map((status) => ({
-    label: ICQ_STATUS_LABEL[status],
+  const t = translator(s.locale)
+  return (Object.keys(ICQ_STATUS) as IcqStatus[]).map((status) => ({
+    label: t(ICQ_STATUS[status]),
     type: 'radio',
     checked: s.icqStatus === status,
     click: () => updateSettings({ icqStatus: status })
@@ -357,16 +378,18 @@ let trayImage: Electron.NativeImage | undefined
 function refreshTray(): void {
   if (!tray) return
   const s = settings()
+  const t = translator(s.locale)
   tray.setToolTip(s.skin === 'icq' ? `ICQ# ${s.uin} - ${s.nick}` : s.skin === 'msn' ? `MSN Messenger - ${s.nick}` : 'WhatsApp')
   if (trayImage) tray.setImage(trayImage)
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Abrir', click: () => (win?.show(), win?.focus()) },
-      { label: 'Enviar un zumbido', click: () => sendWa('wa:send-nudge') },
-      { label: 'Estado', submenu: s.skin === 'icq' ? icqStatusItems() : buildMenu('status') },
-      { label: 'Skin', submenu: skinItems() },
+      { label: t('open'), click: () => (win?.show(), win?.focus()) },
+      { label: t('sendNudge'), click: () => sendWa('wa:send-nudge') },
+      { label: t('status'), submenu: s.skin === 'icq' ? icqStatusItems() : buildMenu('status') },
+      { label: t('skin'), submenu: skinItems() },
+      languageMenu(),
       { type: 'separator' },
-      { label: 'Salir', click: () => win?.close() }
+      { label: t('exit'), click: () => win?.close() }
     ])
   )
 }

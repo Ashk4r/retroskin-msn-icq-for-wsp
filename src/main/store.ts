@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { EOL, userInfo } from 'node:os'
 import { join } from 'node:path'
 import { app, type Rectangle } from 'electron'
+import { isLanguage, resolveLocale, translator } from '@shared/i18n'
 import type { Settings } from '@shared/types'
 
 const dir = (): string => {
@@ -27,14 +28,14 @@ function defaultNick(): string {
   try {
     return userInfo().username
   } catch {
-    return 'Yo'
+    return translator(resolveLocale(app.getPreferredSystemLanguages()[0] ?? app.getLocale()))('you')
   }
 }
 
 /** A made-up 9-digit ICQ number, fixed on first run. */
 const randomUin = (): string => String(100_000_000 + Math.floor(Math.random() * 899_999_999))
 
-interface Stored extends Settings {
+interface Stored extends Omit<Settings, 'locale'> {
   bounds?: Rectangle
   maximized?: boolean
 }
@@ -55,7 +56,8 @@ function load(): Stored {
     shake: true,
     toasts: true,
     alwaysOnTop: false,
-    ...stored
+    ...stored,
+    language: isLanguage(stored?.language) ? stored.language : 'system'
   }
   if (!stored.uin) writeJson('settings.json', cache)
   return cache
@@ -64,10 +66,14 @@ function load(): Stored {
 export const store = {
   get(): Settings {
     const { bounds: _bounds, maximized: _maximized, ...settings } = load()
-    return settings
+    const locale = settings.language === 'system'
+      ? resolveLocale(app.getPreferredSystemLanguages()[0] ?? app.getLocale())
+      : settings.language
+    return { ...settings, locale }
   },
-  update(patch: Partial<Settings>): Settings {
-    cache = { ...load(), ...patch }
+  update({ locale: _locale, language, ...patch }: Partial<Settings>): Settings {
+    const previous = load()
+    cache = { ...previous, ...patch, language: isLanguage(language) ? language : previous.language }
     writeJson('settings.json', cache)
     return store.get()
   },
@@ -84,21 +90,21 @@ export const soundsDir = (): string => join(dir(), 'sounds')
 export function ensureSoundsDir(): string {
   const root = soundsDir()
   for (const skin of ['msn', 'icq']) mkdirSync(join(root, skin), { recursive: true })
-  const readme = join(root, 'LEEME.txt')
+  const { locale } = store.get()
+  const t = translator(locale)
+  const readme = join(root, { en: 'README.txt', de: 'LIESMICH.txt', es: 'LEEME.txt' }[locale])
   if (!existsSync(readme)) {
     writeFileSync(
       readme,
       [
-        'Poné acá tus propios sonidos y la app los usa en lugar de los originales que trae.',
+        t('soundInstructions'),
         '',
-        'msn/message.wav  -> mensaje nuevo',
-        'msn/nudge.wav    -> zumbido',
-        'msn/online.wav   -> contacto en línea',
-        'icq/message.wav  -> mensaje nuevo ("Uh-oh!")',
-        'icq/nudge.wav    -> zumbido',
-        'icq/online.wav   -> contacto en línea',
-        '',
-        'También sirven .mp3 u .ogg con el mismo nombre.'
+        `msn/message.wav  → ${t('incomingMessage')}`,
+        `msn/nudge.wav    → ${t('nudge')}`,
+        `msn/online.wav   → ${t('online')}`,
+        `icq/message.wav  → ${t('incomingMessage')} ("Uh-oh!")`,
+        `icq/nudge.wav    → ${t('nudge')}`,
+        `icq/online.wav   → ${t('online')}`
       ].join(EOL)
     )
   }

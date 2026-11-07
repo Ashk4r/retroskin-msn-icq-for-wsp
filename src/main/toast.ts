@@ -35,7 +35,7 @@ export function showToast(data: ToastData, onClick: () => void): void {
   open.push(toast)
   restack()
 
-  const query = new URLSearchParams({ skin: data.skin, kind: data.kind, name: data.name, text: data.text }).toString()
+  const query = new URLSearchParams({ ...data }).toString()
   if (process.env.ELECTRON_RENDERER_URL) void toast.loadURL(`${process.env.ELECTRON_RENDERER_URL}/toast.html?${query}`)
   else void toast.loadFile(join(__dirname, '../renderer/toast.html'), { search: query })
 

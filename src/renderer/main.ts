@@ -17,6 +17,7 @@ let contentObserver: ResizeObserver | undefined
 
 function render(): void {
   const s = settings
+  document.documentElement.lang = s.locale
   document.body.dataset.skin = s.skin
   root.innerHTML = s.skin === 'msn' ? msnChrome(s, maximized) : s.skin === 'icq' ? icqChrome(s, maximized) : offChrome(s, maximized)
   document.title = s.skin === 'msn' ? 'MSN Messenger' : s.skin === 'icq' ? 'ICQ' : 'WhatsApp'
@@ -111,7 +112,7 @@ window.addEventListener('keydown', (event) => {
 /* -------------------------------------------------------------- main bus */
 
 api.onSettings((next) => {
-  const skinChanged = next.skin !== settings.skin
+  const skinChanged = next.skin !== settings?.skin
   settings = next
   if (skinChanged) clearSoundCache()
   render()

@@ -167,7 +167,7 @@ html[data-skin='msn'] header [data-testid='wa-wordmark'] {
   display: none !important;
 }
 html[data-skin='msn'] header[data-testid='chatlist-header'] h2::before {
-  content: 'Contactos';
+  content: var(--wm-label-contacts);
   font: bold 11px Tahoma, Verdana, 'DejaVu Sans', sans-serif;
   color: var(--msn-blue);
   padding-left: 20px;
@@ -274,7 +274,7 @@ html[data-skin='msn'] [data-testid='conversation-header'] > div:first-child > [r
   display: none !important;
 }
 html[data-skin='msn'] [data-testid='conversation-info-header-chat-title']::before {
-  content: 'Para: ';
+  content: var(--wm-label-to);
   font-weight: normal;
   color: #555;
 }
@@ -314,7 +314,7 @@ html[data-skin='msn'] [data-wm-msg] [data-testid='msg-meta'] {
   opacity: 0.6;
 }
 html[data-skin='msn'] [data-wm-first='1']::before {
-  content: attr(data-wm-sender) ' dice:';
+  content: attr(data-wm-sender) var(--wm-label-saysSuffix);
   display: block;
   margin: 10px 0 1px 12px;
   color: #6d6d6d;
@@ -330,7 +330,7 @@ html[data-skin='msn'] [data-wm-msg] [data-testid='author'] {
 }
 html[data-skin='msn'] [data-wm-msg] span[data-testid='author'] > span[data-testid='author']::after,
 html[data-skin='msn'] [data-wm-msg] [data-testid='author']:not(:has([data-testid='author']))::after {
-  content: ' dice:';
+  content: var(--wm-label-saysSuffix);
 }
 /* Date separators and system notices: plain grey text */
 html[data-skin='msn'] [data-wm-system] * {
@@ -345,7 +345,7 @@ html[data-skin='msn'] [data-wm-nudge='1'] > * {
   display: none !important;
 }
 html[data-skin='msn'] [data-wm-nudge='1']::after {
-  content: attr(data-wm-sender) ' te ha enviado un zumbido.';
+  content: attr(data-wm-nudge-text);
   display: block;
   margin: 10px 12px;
   padding: 6px 0 6px 24px;
@@ -354,9 +354,6 @@ html[data-skin='msn'] [data-wm-nudge='1']::after {
   color: #444;
   font: 13px Tahoma, Verdana, 'DejaVu Sans', sans-serif;
   background: var(--wm-nudge) 2px center / 16px no-repeat;
-}
-html[data-skin='msn'] [data-wm-nudge='1'][data-wm-msg='out']::after {
-  content: 'Has enviado un zumbido.';
 }
 
 /* Composer */

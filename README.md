@@ -6,6 +6,14 @@
 
 > Proyecto de fan, gratis y de código abierto. **Todo es estético**: WhatsApp funciona exactamente igual que en el navegador. No está afiliado a WhatsApp, Meta, Microsoft ni ICQ. Los íconos son imitaciones hechas a mano. Los sonidos son los originales de MSN e ICQ, de sus respectivos dueños, incluidos solo por nostalgia ([créditos](resources/sounds/CREDITOS.md)).
 
+## Language / Sprache / Idioma
+
+The desktop app supports English, Deutsch and Español. It follows your system language by default and falls back to English. Switch at any time from **Tools → Language** (MSN), **Main → Preferences → Language** (ICQ), or the tray menu. In the original WhatsApp skin, use **Skin → Language**. The app remembers your choice. WhatsApp Web has its own language setting.
+
+Die Desktop-App unterstützt Deutsch, Englisch und Spanisch. Unter **Extras → Sprache** (MSN), **Hauptmenü → Einstellungen → Sprache** (ICQ) oder über das Symbol im Infobereich kannst du die Sprache wechseln. Im WhatsApp-Original findest du die Einstellung unter **Design → Sprache**. WhatsApp Web hat eine eigene Spracheinstellung.
+
+La app de escritorio admite español, inglés y alemán. Cambiá el idioma desde **Herramientas → Idioma** (MSN), **Menú principal → Preferencias → Idioma** (ICQ) o el menú de la bandeja. En el tema original de WhatsApp usá **Tema → Idioma**. WhatsApp Web tiene su propio ajuste de idioma.
+
 ## Descargar e instalar (1 minuto)
 
 Hay versión para **Windows**, **Mac** y **Linux**.

@@ -1,3 +1,5 @@
+import type { Language, Locale } from './i18n'
+
 export type SkinId = 'msn' | 'icq' | 'off'
 
 export type MsnStatus = 'online' | 'busy' | 'brb' | 'away' | 'phone' | 'lunch' | 'offline'
@@ -8,6 +10,8 @@ export type SoundId = 'message' | 'nudge' | 'online'
 /** Everything here is local decoration: none of it reaches WhatsApp. */
 export interface Settings {
   skin: SkinId
+  language: Language
+  locale: Locale
   nick: string
   personalMessage: string
   msnStatus: MsnStatus
@@ -33,6 +37,7 @@ export type MenuId = 'file' | 'contacts' | 'actions' | 'tools' | 'help' | 'statu
 
 export interface ToastData {
   skin: SkinId
+  locale: Locale
   kind: 'message' | 'online' | 'nudge'
   name: string
   text: string
@@ -56,24 +61,5 @@ export interface ShellApi {
   onDialog(cb: (dialog: 'options' | 'about') => void): void
 }
 
-export const MSN_STATUS_LABEL: Record<MsnStatus, string> = {
-  online: 'Conectado',
-  busy: 'Ocupado',
-  brb: 'Vuelvo enseguida',
-  away: 'Ausente',
-  phone: 'Al teléfono',
-  lunch: 'Salí a comer',
-  offline: 'Desconectado'
-}
-
-export const ICQ_STATUS_LABEL: Record<IcqStatus, string> = {
-  online: 'Online',
-  ffc: 'Free For Chat',
-  away: 'Away',
-  na: 'N/A (Extended Away)',
-  occupied: 'Occupied (Urgent Msgs)',
-  dnd: 'DND (Do not Disturb)',
-  invisible: 'Privacy (Invisible)'
-}
-
+// Keep the wire text compatible with existing Retro Messenger clients.
 export const NUDGE_TEXT = 'ZUMBIDO'

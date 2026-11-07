@@ -5,6 +5,7 @@
  * types *ZUMBIDO* in the composer and presses send.
  */
 import { ipcRenderer } from 'electron'
+import { translator } from '@shared/i18n'
 import { NUDGE_TEXT, type Settings, type SkinId, type WaState } from '@shared/types'
 import { icqFlower, msnLogo, nudgeIcon, samplePicture, smileyIcon, svgUrl } from '@shared/icons'
 import { sidebarProfile, sidebarFooter, sidebarTools } from '@shared/sidebar'
@@ -14,14 +15,17 @@ let settings: Settings | undefined
 let state: WaState | undefined
 const html = (): HTMLElement => document.documentElement
 const skin = (): SkinId => settings?.skin ?? 'off'
+const text = () => translator(settings?.locale ?? 'en')
 
 const NUDGE_COOLDOWN_MS = 10_000
 
 ipcRenderer.on('wa:settings', (_event, next: Settings) => {
-  const skinChanged = next.skin !== settings?.skin
+  const localeChanged = next.locale !== settings?.locale
+  const chromeChanged = localeChanged || next.skin !== settings?.skin
   settings = next
   applySkin()
-  if (skinChanged) buildOverlay()
+  if (localeChanged) noticeUntil = 0
+  if (chromeChanged) buildOverlay()
   syncSidebar()
   tick()
 })
@@ -58,31 +62,36 @@ function buildOverlay(): void {
   overlay.id = 'wm-root'
   sidebarFingerprint = ''
   const s = skin()
+  const t = text()
+  overlay.lang = settings?.locale ?? 'en'
+  for (const key of ['contacts', 'contactList', 'to', 'saysSuffix'] as const) {
+    html().style.setProperty(`--wm-label-${key}`, JSON.stringify(t(key)))
+  }
   if (s === 'off') {
-    overlay.innerHTML = `<div id="wm-bar" class="wm-off"><button id="wm-nudge" title="Enviar un zumbido (Ctrl+G)">${nudgeIcon(16)}</button></div>`
+    overlay.innerHTML = `<div id="wm-bar" class="wm-off"><button id="wm-nudge" title="${t('sendNudge')} (Ctrl+G)">${nudgeIcon(16)}</button></div>`
   } else if (s === 'msn') {
     overlay.innerHTML = `
       <div id="wm-login"><span class="wm-logo">${msnLogo(48)}</span>
-        <div><b>Iniciar sesión</b><span>Escaneá el código con WhatsApp en tu teléfono para iniciar sesión en Messenger.</span></div></div>
+        <div><b>${t('signIn')}</b><span>${t('scanQr')}</span></div></div>
       <div id="wm-status"></div>
       <div id="wm-bar">
-        <button id="wm-font" title="Cambiar la fuente"><b>A</b> Fuente</button>
-        <button id="wm-emoji" title="Emoticonos">${smileyIcon(16)}<span class="wm-caret">▾</span></button>
-        <button id="wm-nudge" title="Enviar un zumbido (Ctrl+G)">${nudgeIcon(16)} Zumbido</button>
+        <button id="wm-font" title="${t('changeFont')}"><b>A</b> ${t('font')}</button>
+        <button id="wm-emoji" title="${t('emoticons')}">${smileyIcon(16)}<span class="wm-caret">▾</span></button>
+        <button id="wm-nudge" title="${t('sendNudge')} (Ctrl+G)">${nudgeIcon(16)} ${t('nudge')}</button>
         <span class="wm-grow"></span>
-        <button id="wm-send" title="Enviar (Enter)">Enviar</button>
+        <button id="wm-send" title="${t('send')} (Enter)">${t('send')}</button>
       </div>
       <img id="wm-pic-contact" alt="" /><img id="wm-pic-own" alt="" />`
   } else {
     overlay.innerHTML = `
       <div id="wm-login"><span class="wm-logo">${icqFlower('logo', 44)}</span>
-        <div><b>ICQ Login</b><span>Scan the code with WhatsApp on your phone to link WhatsApp. Your ICQ details stay local.</span></div></div>
+        <div><b>${t('icqLogin')}</b><span>${t('scanQr')}</span></div></div>
       <div id="wm-bar">
         <span id="wm-status"></span>
-        <button id="wm-send" title="Send (Enter)">Send</button>
+        <button id="wm-send" title="${t('send')} (Enter)">${t('send')}</button>
       </div>`
   }
-  if (s !== 'off') overlay.insertAdjacentHTML('afterbegin', `<section id="wm-profile"></section><footer id="wm-side-footer"></footer><div id="wm-chat-title"></div>${s === 'icq' ? `<nav id="wm-side-tools" aria-label="ICQuick">${sidebarTools()}</nav>` : ''}`)
+  if (s !== 'off') overlay.insertAdjacentHTML('afterbegin', `<section id="wm-profile"></section><footer id="wm-side-footer"></footer><div id="wm-chat-title"></div>${s === 'icq' ? `<nav id="wm-side-tools" aria-label="ICQuick">${sidebarTools(settings?.locale ?? 'en')}</nav>` : ''}`)
   document.body.appendChild(overlay)
   bindSidebar()
   syncSidebar()
@@ -92,7 +101,7 @@ function buildOverlay(): void {
   })
   part('wm-nudge')?.addEventListener('click', () => void sendNudge())
   part('wm-emoji')?.addEventListener('click', () => buttonWithIcon(document.querySelector(SEL.footer), ICON.emoji)?.click())
-  part('wm-font')?.addEventListener('click', () => notice('Las fuentes de Messenger no viajan por WhatsApp :)'))
+  part('wm-font')?.addEventListener('click', () => notice(t('fontNotice')))
   part('wm-send')?.addEventListener('click', () => pressSend())
   lastPics = { contact: '', own: '' }
 }
@@ -199,7 +208,7 @@ function placeOverlay(): void {
     })
     const title = part('wm-chat-title')
     const name = headerInfo().name
-    const caption = skin() === 'icq' ? `Message Session - ${name}` : `${name} - Conversación`
+    const caption = text()(skin() === 'icq' ? 'icqChatTitle' : 'chatTitle', { name })
     if (title && title.textContent !== caption) title.textContent = caption
   }
   for (const [name, value] of Object.entries(vars)) {
@@ -248,6 +257,7 @@ function isFresh(time: string): boolean {
 }
 
 function markMessages(chatName: string): void {
+  const t = text()
   const rows = [...document.querySelectorAll<HTMLElement>(SEL.rows)]
   // In groups WhatsApp prints the author inside the bubble; the skin reuses it.
   const group = !!document.querySelector(`${SEL.main} ${SEL.author}`)
@@ -278,7 +288,7 @@ function markMessages(chatName: string): void {
       dir = parsed && label === parsed[3].trim() ? 'in' : 'out'
     }
     const out = dir === 'out'
-    const sender = out ? settings?.nick || 'Yo' : parsed?.[3]?.trim() || (tail ? chatName : previous) || chatName
+    const sender = out ? settings?.nick || t('you') : parsed?.[3]?.trim() || (tail ? chatName : previous) || chatName
     const time = parsed?.[1]?.trim() || (row.querySelector(SEL.messageMeta)?.textContent ?? '').trim()
 
     setData(wrapper, 'wmMsg', dir)
@@ -292,6 +302,10 @@ function markMessages(chatName: string): void {
     const text = bubble.querySelector<HTMLElement>(SEL.messageText)
     const nudge = !!text && (text.textContent ?? '').trim() === NUDGE_TEXT && !!text.querySelector('strong, b')
     setData(wrapper, 'wmNudge', nudge ? '1' : '0')
+    if (nudge) {
+      const caption = out ? t('nudgeSent') : t('nudgeReceived', { name: sender })
+      setData(wrapper, 'wmNudgeText', skin() === 'icq' ? `*** ${caption} ***` : caption)
+    }
 
     const id = wrapper.getAttribute('data-id') ?? `${chatName}#${index}#${pre}`
     if (seenIds.has(id)) return
@@ -307,9 +321,10 @@ function markMessages(chatName: string): void {
 function statusLine(name: string, subtitle: string): string {
   if (Date.now() < noticeUntil) return noticeText
   const s = skin()
-  if (TYPING_RE.test(subtitle)) return s === 'icq' ? `${name} is typing...` : `${name} está escribiendo un mensaje...`
+  const t = text()
+  if (TYPING_RE.test(subtitle)) return t('typing', { name })
   if (s === 'icq') return ''
-  if (lastIncoming) return `Último mensaje recibido el ${lastIncoming.date} a las ${lastIncoming.time}.`
+  if (lastIncoming) return t('lastMessage', lastIncoming)
   return ''
 }
 
@@ -410,7 +425,7 @@ function pressSend(): void {
   const footer = document.querySelector(SEL.footer)
   const send =
     buttonWithIcon(footer, ICON.send) ??
-    footer?.querySelector<HTMLElement>('button[aria-label="Send"], button[aria-label="Enviar"], button[aria-label="Enviar mensaje"]') ??
+    footer?.querySelector<HTMLElement>('button[aria-label="Send"], button[aria-label="Enviar"], button[aria-label="Enviar mensaje"], button[aria-label="Senden"], button[aria-label="Nachricht senden"]') ??
     null
   if (send) send.click()
   else if ((box.textContent ?? '').trim()) {
@@ -420,17 +435,18 @@ function pressSend(): void {
 
 async function sendNudge(): Promise<void> {
   const box = composer()
-  if (!box) return notice('Abrí una conversación para enviar un zumbido.')
+  const t = text()
+  if (!box) return notice(t('openChatFirst'))
   if (Date.now() - lastNudge < NUDGE_COOLDOWN_MS) {
-    return notice(skin() === 'icq' ? 'Esperá un poco antes de otro zumbido.' : 'No podés enviar zumbidos con tanta frecuencia.')
+    return notice(t('waitBeforeNudge'))
   }
-  if ((box.textContent ?? '').trim()) return notice('Enviá o borrá lo que estás escribiendo antes del zumbido.')
+  if ((box.textContent ?? '').trim()) return notice(t('finishDraft'))
   lastNudge = Date.now()
   box.focus()
   document.execCommand('insertText', false, `*${NUDGE_TEXT}*`)
   await wait(150)
   pressSend()
-  notice(skin() === 'icq' ? 'Zumbido enviado.' : 'Enviaste un zumbido.')
+  notice(text()('nudgeSent'))
   ipcRenderer.send('wa:nudge-sent')
 }
 
