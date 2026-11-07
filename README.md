@@ -1,131 +1,134 @@
-# Retro Messenger para WhatsApp
+# Retro Messenger for WhatsApp
 
-**WhatsApp Web vestido de MSN Messenger 7.5 o de ICQ 2000b**, con zumbido, sonidos, avisos emergentes y todos los chiches. Hermano nostálgico de [Winamp Remote para TIDAL](https://github.com/Lisandro46/winamp-tidal).
+Use WhatsApp Web in a desktop window styled like **MSN Messenger 7.5** or **ICQ 2000b**, complete with classic sounds, pop-up alerts, and window-shaking nudges. It’s a companion project to [Winamp Remote for TIDAL](https://github.com/Lisandro46/winamp-tidal).
 
-**Página oficial y descargas: [retro.trincherai.com](https://retro.trincherai.com)**
+> Retro Messenger is a free, open-source fan project. WhatsApp Web handles your chats and sign-in, while Retro Messenger supplies the interface. The project is unaffiliated with WhatsApp, Meta, Microsoft, and ICQ. The icons are handmade recreations, and the original MSN and ICQ sounds belong to their respective owners. [Sound credits](resources/sounds/CREDITOS.md)
 
-> Proyecto de fan, gratis y de código abierto. **Todo es estético**: WhatsApp funciona exactamente igual que en el navegador. No está afiliado a WhatsApp, Meta, Microsoft ni ICQ. Los íconos son imitaciones hechas a mano. Los sonidos son los originales de MSN e ICQ, de sus respectivos dueños, incluidos solo por nostalgia ([créditos](resources/sounds/CREDITOS.md)).
+## Languages
 
-## Language / Sprache / Idioma
+This branch adds **English, German, and Spanish** to the desktop interface. The app follows your system language by default, uses English for other languages, and remembers your selection. WhatsApp Web has its own language setting.
 
-The desktop app supports English, Deutsch and Español. It follows your system language by default and falls back to English. Switch at any time from **Tools → Language** (MSN), **Main → Preferences → Language** (ICQ), or the tray menu. In the original WhatsApp skin, use **Skin → Language**. The app remembers your choice. WhatsApp Web has its own language setting.
+| Skin | Where to change the language |
+|---|---|
+| MSN Messenger | **Tools → Language** |
+| ICQ | **Main → Preferences → Language** |
+| Original WhatsApp | **Skin → Language** |
 
-Die Desktop-App unterstützt Deutsch, Englisch und Spanisch. Unter **Extras → Sprache** (MSN), **Hauptmenü → Einstellungen → Sprache** (ICQ) oder über das Symbol im Infobereich kannst du die Sprache wechseln. Im WhatsApp-Original findest du die Einstellung unter **Design → Sprache**. WhatsApp Web hat eine eigene Spracheinstellung.
+You can also change the language from the system tray menu. To try the multilingual build, follow the [development instructions](#development).
 
-La app de escritorio admite español, inglés y alemán. Cambiá el idioma desde **Herramientas → Idioma** (MSN), **Menú principal → Preferencias → Idioma** (ICQ) o el menú de la bandeja. En el tema original de WhatsApp usá **Tema → Idioma**. WhatsApp Web tiene su propio ajuste de idioma.
+## Download and install
 
-## Descargar e instalar (1 minuto)
-
-Hay versión para **Windows**, **Mac** y **Linux**.
+The links below point to the original project's releases for Windows, macOS, and Linux. [Project website](https://retro.trincherai.com) · [Upstream releases](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest)
 
 ### Windows
 
-#### ⬇️ [Descargar el instalador para Windows](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-Setup.exe)
+Use the [Windows installer](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-Setup.exe) or run the [portable version](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-Portable.exe) without installing it.
 
-1. Abrí el archivo que se descargó. Se instala solo, sin preguntas ni permisos de administrador, y crea un acceso directo en el escritorio.
-2. Si Windows muestra **"Windows protegió su PC"**, tocá **Más información → Ejecutar de todas formas**. Aparece porque la app no está firmada: un certificado cuesta cientos de dólares por año. El código es público y el instalador lo arma GitHub directamente desde este repo.
-3. Se abre Messenger con un código QR. En tu teléfono: **WhatsApp → ⋮ / Configuración → Dispositivos vinculados → Vincular un dispositivo**, y escaneá el código.
-4. ¡Listo! La sesión queda guardada. Para cambiar entre MSN e ICQ: **Herramientas → Skin** (en ICQ: **Main → Change Skin**).
+1. Open the downloaded file. The installer creates a desktop shortcut and runs without administrator permissions.
+2. The upstream installer is unsigned, so Windows may show **Windows protected your PC**. To proceed, select **More info → Run anyway**.
+3. Open WhatsApp on your phone, go to **Linked devices → Link a device**, and scan the QR code in Retro Messenger.
+4. Your session is saved. To switch between MSN and ICQ, open the skin menu.
 
-¿No querés instalar nada? Bajate la [versión portable](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-Portable.exe): la abrís y listo.
+Requires 64-bit Windows 10 or 11 and WhatsApp on your phone. To uninstall, find **Retro Messenger para WhatsApp** under **Settings → Apps**.
 
-Requisitos: Windows 10 u 11 (64 bits) y WhatsApp en tu teléfono. Para desinstalar: **Configuración de Windows → Aplicaciones → Retro Messenger para WhatsApp → Desinstalar**.
+### macOS
 
-### Mac
+Download for [Apple Silicon](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-mac-arm64.dmg) or [Intel](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-mac-x64.dmg). Check **Apple menu → About This Mac** to find your chip type.
 
-#### ⬇️ Descargar para [Mac con Apple Silicon (M1, M2, M3…)](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-mac-arm64.dmg) · [Mac con Intel](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-mac-x64.dmg)
-
-¿No sabés cuál tenés? **Menú Apple → Acerca de esta Mac**: si dice "Chip Apple", es Apple Silicon.
-
-1. Abrí el `.dmg` y arrastrá **Retro Messenger para WhatsApp** a **Aplicaciones**.
-2. La primera vez, macOS la bloquea porque no está firmada por Apple (la firma cuesta USD 99 por año). Abrí **Aplicaciones**, hacé **clic derecho → Abrir** y confirmá con **Abrir**. Si dice que la app "está dañada", abrí la Terminal y pegá:
+1. Open the `.dmg` and drag **Retro Messenger para WhatsApp** into **Applications**.
+2. The upstream build uses an ad-hoc signature. If macOS blocks it, Control-click the app and choose **Open**. If macOS reports that the app is damaged, run the following in Terminal and then reopen it.
    ```bash
    xattr -cr "/Applications/Retro Messenger para WhatsApp.app"
    ```
-3. Escaneá el QR igual que en Windows (paso 3 de arriba).
+3. Scan the QR code from **Linked devices** in WhatsApp on your phone.
 
-Requisitos: macOS 12 o más nuevo.
+Requires macOS 12 or later.
 
 ### Linux
 
-Elegí el formato según tu distribución:
+Choose the package for your distribution and run the command from your downloads folder.
 
-- ⬇️ [**.deb**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-amd64.deb) — Ubuntu, Debian, Mint, Pop!_OS. Instalalo con doble clic o desde la terminal, en la carpeta de descargas:
+- [**.deb**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-amd64.deb) for Ubuntu, Debian, Mint, or Pop!_OS. Open the package in your software installer or use the command below.
   ```bash
   sudo apt install ./Retro-Messenger-linux-amd64.deb
   ```
-- ⬇️ [**.rpm**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-x86_64.rpm) — Fedora, openSUSE:
+- [**.rpm**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-x86_64.rpm) for Fedora or openSUSE. Use the command below on Fedora.
   ```bash
   sudo dnf install ./Retro-Messenger-linux-x86_64.rpm
   ```
-- ⬇️ [**AppImage**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-x86_64.AppImage) — cualquier distro, sin instalar nada:
+- [**AppImage**](https://github.com/Lisandro46/retroskin-msn-icq-for-wsp/releases/latest/download/Retro-Messenger-linux-x86_64.AppImage) runs directly after you make it executable.
   ```bash
   chmod +x Retro-Messenger-linux-x86_64.AppImage
   ./Retro-Messenger-linux-x86_64.AppImage
   ```
-  Si no arranca, falta `libfuse2` (Ubuntu 22.04: `sudo apt install libfuse2`; en 24.04: `sudo apt install libfuse2t64`). Si en Ubuntu 24.04 se cierra con un error de "sandbox", abrila con `./Retro-Messenger-linux-x86_64.AppImage --no-sandbox` o usá el .deb, que no tiene ese problema.
+  If the AppImage reports a missing FUSE library, install `libfuse2` on Ubuntu 22.04 or `libfuse2t64` on Ubuntu 24.04. If it reports a sandbox error on Ubuntu 24.04, use the `.deb` package.
 
-Con .deb o .rpm aparece como **Retro Messenger para WhatsApp** en el menú de aplicaciones. Después escaneá el QR igual que en Windows (paso 3). Requisitos: Linux de 64 bits (x86_64).
+With the `.deb` or `.rpm` package, look for **Retro Messenger para WhatsApp** in your applications menu. Scan the QR code from **Linked devices** in WhatsApp on your phone.
 
-La bandeja del sistema necesita soporte de AppIndicator (en GNOME, la extensión "AppIndicator and KStatusNotifierItem Support").
+Requires 64-bit Linux (x86_64). The system tray icon requires AppIndicator support. On GNOME, use the **AppIndicator and KStatusNotifierItem Support** extension.
 
-## Qué tiene
+## Features
 
 | | MSN Messenger 7.5 | ICQ 2000b |
 |---|---|---|
-| Ventana | Marco azul de Windows XP, menú Archivo / Contactos / Acciones / Herramientas / Ayuda | Gris Windows 98 con relieve, controles **Main** y **Services**, ICQuick lateral y pie con estado |
-| Vos | Perfil sobre la lista: foto, nick editable, `(Conectado) ▾`, `<Escribe un mensaje personal>` | **ICQ#** y nick editables, estado con florcita (Online, Away, N/A, Occupied, DND, Free For Chat, Invisible) |
-| Lista de chats | "Contactos", íconos neutros cuando no conocemos presencia, contador naranja | "My Contact List", flores grises con presencia desconocida, nota amarilla para mensajes pendientes |
-| Conversación | Sin globos, **"Juan dice:"**, fotos a la derecha, barra Fuente / Emoticonos / **Zumbido** / Enviar, "Juan está escribiendo un mensaje..." | **"Juan (19:05):"** en rojo y lo tuyo en azul, cabecera **Message Session** y botón **Send**; zumbido disponible como extra desde menú o Ctrl+G |
-| Sonidos | Los originales: mensaje nuevo, contacto en línea y zumbido | Los originales: "Uh-oh!", contacto en línea y alerta |
-| Extras | Banner de publicidad ficticia limitado al pie de contactos, cartelito "X dice:" abajo a la derecha | Cartelito gris Win98 |
+| Window | Blue Windows XP frame with File, Contacts, Actions, Tools, and Help menus | Beveled Windows 98 frame with **Main** and **Services** menus, an ICQuick sidebar, and a status bar |
+| Profile | Display picture, editable nickname, status, and personal message above the contact list | Editable **ICQ#** and nickname with a flower icon for your status |
+| Chat list | **Contacts** heading, neutral icons when presence is unknown, and orange unread counts | **My Contact List** heading, gray flowers when presence is unknown, and yellow notes for unread messages |
+| Conversation | **“Juan says:”** instead of chat bubbles, photos on the right, a typing indicator, and a toolbar with Font, Emoticons, Nudge, and Send | Incoming names in red and yours in blue, a **Message Session** heading, and a **Send** button. Send a nudge from the menu or with `Ctrl+G`. |
+| Sounds | Original new-message, sign-in, and nudge sounds | Original **“Uh-oh!”**, sign-in, and alert sounds |
+| Extras | A fictional retro ad below the contact list and MSN-style pop-ups | Windows 98-style pop-ups |
 
-Además: skin **WhatsApp original** (con un botoncito de zumbido flotante), ícono en la bandeja y parpadeo en la barra de tareas (en Mac, rebota el ícono del Dock).
+The app also includes the **original WhatsApp** skin with a floating nudge button, a system tray icon, and taskbar alerts. On macOS, alerts bounce the Dock icon.
 
-### El zumbido
+### Nudges
 
-El botón **Zumbido** (o **Ctrl+G**) manda el texto `*ZUMBIDO*`, que WhatsApp muestra en negrita, y te sacude la ventana con sonido. Si te llega un **ZUMBIDO** en negrita, tu ventana también tiembla y se muestra como en MSN: "Juan te ha enviado un zumbido.". Como en MSN, no se puede mandar más de uno cada 10 segundos. Del otro lado, quien use WhatsApp normal ve simplemente **ZUMBIDO**.
+Select **Nudge** or press `Ctrl+G` to send `*ZUMBIDO*`. Your window shakes and plays a sound. Other Retro Messenger users see a nudge in their chosen language and get the same shake and sound if enabled. People using standard WhatsApp see **ZUMBIDO** in bold. You can send one nudge every ten seconds.
 
-### Tus propios sonidos
+### Custom sounds
 
-**Herramientas → Carpeta de sonidos…** (en ICQ: **Main → Preferences → Sounds folder…**) abre la carpeta de sonidos:
+Open **Tools → Sounds folder…** in MSN or **Main → Preferences → Sounds folder…** in ICQ to find the sound folder.
 
-- Windows: `%APPDATA%\retro-messenger-whatsapp\sounds`
-- Mac: `~/Library/Application Support/retro-messenger-whatsapp/sounds`
-- Linux: `~/.config/retro-messenger-whatsapp/sounds`
+- Windows `%APPDATA%\retro-messenger-whatsapp\sounds`
+- macOS `~/Library/Application Support/retro-messenger-whatsapp/sounds`
+- Linux `~/.config/retro-messenger-whatsapp/sounds`
 
-Si ponés ahí `msn/message.wav`, `msn/nudge.wav`, `msn/online.wav`, `icq/message.wav`, etc., se usan en lugar de los originales que trae la app. También sirven `.mp3` y `.ogg`. Si falta alguno, suena una imitación sintetizada.
+Add a file such as `msn/message.wav`, `msn/nudge.wav`, `msn/online.wav`, or `icq/message.wav` to replace the bundled sound. Files with the same base name and an `.mp3` or `.ogg` extension work too. The app plays a synthesized sound when neither a custom nor a bundled file is available.
 
-## Bueno saber
+## Local profile
 
-El nick, el mensaje personal, el estado y el ICQ# son decorativos: se guardan en tu computadora y **no cambian nada en WhatsApp**.
+Your nickname, personal message, status, and ICQ number are stored on your computer and only appear in Retro Messenger.
 
-## Desarrollo
+## Development
+
+Use Node.js 22.12 or later. Run these commands from the checkout for this branch.
 
 ```bash
-npm install
-npm run dev        # app en modo desarrollo
-npm run preview:retro  # revisión visual local con datos ficticios, puerto 4173
+npm ci
+npm run dev           # Start the desktop app in development mode
+npm run preview:retro # Preview the skins with sample data at http://127.0.0.1:4173
 npm run typecheck
-npm run dist:win   # instalador y portable en dist/ (también: npm run dist)
-npm run dist:mac   # .dmg y .zip (solo desde una Mac)
-npm run dist:linux # AppImage, .deb y .rpm (desde Linux; .rpm necesita rpmbuild)
-npm run icon       # regenera build/icon.png a 1024 px
-npm run web:assets # capturas e imagen para compartir de la página web/ (ver PUBLICAR.md)
+npm run dist:win      # Build the Windows installer and portable app in dist/
+npm run dist:mac      # Build .dmg and .zip packages on macOS
+npm run dist:linux    # Build AppImage, .deb and .rpm on Linux (requires rpmbuild for .rpm)
+npm run icon          # Regenerate build/icon.png at 1024 px
+npm run web:assets    # Regenerate screenshots and the sharing image for web/
 ```
 
-Para publicar una versión: `git tag v0.2.0 && git push origin v0.2.0` y GitHub Actions arma los paquetes de Windows, Mac y Linux. También se puede correr a mano desde **Actions → Release → Run workflow** para bajar los archivos sin publicar.
+`npm run dist` is an alias for `npm run dist:win`. See the [publishing guide](PUBLICAR.md) for website asset details.
 
-### Cómo está hecho
+Push a version tag such as `v0.3.0` to trigger the **Release** workflow, which builds packages for Windows, macOS, and Linux. To generate build artifacts only, run it manually from **Actions → Release → Run workflow**.
 
-- `src/main` — ventana sin marco de Electron + un `WebContentsView` que carga web.whatsapp.com (con User-Agent de Chrome y sesión persistente), sacudida, bandeja y avisos.
-- `src/renderer` — el marco de cada skin (barra de título y menús) y los sonidos (originales en `resources/sounds`, imitaciones sintetizadas con WebAudio como respaldo).
-- `src/preload/whatsapp.ts` — corre dentro de WhatsApp: marca nodos con `data-wm-*`, dibuja perfil y pie sobre la lista, cabecera y herramientas sobre la conversación; detecta zumbidos y mensajes nuevos.
-- `src/wa/selectors.ts` — **todas** las referencias al HTML de WhatsApp (ids, roles, `data-testid`). WhatsApp cambia seguido: si algo deja de verse bien, se arregla ahí.
-- `src/wa/css` — las skins aplicadas sobre WhatsApp.
+### How it works
 
-La vista de prueba usa las plantillas, estilos y preload reales sobre un DOM sintético. No se conecta a WhatsApp ni prueba la compatibilidad con su DOM actual. Ver [registro de la primera etapa](docs/ETAPA_1_FIDELIDAD.md) y [plan completo](docs/PLAN_FIDELIDAD_RETRO.md).
+- `src/main` manages the frameless Electron window and the `WebContentsView` that loads WhatsApp Web with a Chrome user agent and a persistent session. It also handles the tray, notifications, and window shake.
+- `src/renderer` renders the title bar and menus for each skin and plays the bundled sounds from `resources/sounds`, with synthesized Web Audio fallbacks.
+- `src/preload/whatsapp.ts` tags WhatsApp elements with `data-wm-*` attributes, adds the retro profile and chat controls, and detects nudges and new messages.
+- `src/wa/selectors.ts` contains the selectors for WhatsApp Web. Start here if a WhatsApp update changes the page structure.
+- `src/wa/css` contains the styles applied to WhatsApp Web.
+- `src/shared/i18n.ts` contains the translations used by the desktop app and skins.
 
-## Licencia
+The preview runs the real templates, styles, and preload code against simulated WhatsApp markup. It is useful for checking layout with sample data. [First-stage notes](docs/ETAPA_1_FIDELIDAD.md) · [Full design plan](docs/PLAN_FIDELIDAD_RETRO.md)
 
-MIT
+## License
+
+The project code is available under the [MIT License](LICENSE). See the [sound credits](resources/sounds/CREDITOS.md) for ownership details.
